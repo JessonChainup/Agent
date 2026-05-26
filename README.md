@@ -49,12 +49,11 @@ cp -R docs/REQ-TEMPLATE docs/<REQ-ID>
 | 环境 | URL |
 |------|-----|
 | 原型预览 | [`https://jessonchainup.github.io/Agent/`](https://jessonchainup.github.io/Agent/) |
-| REQ-002 原型（临时 nginx） | [`http://163.7.12.83/mock-req002.html`](http://163.7.12.83/mock-req002.html) |
 
 ## REQ 索引
 
 | REQ-ID | 标题 | spec_type | 分支 / PR |
 |--------|------|-----------|-----------|
 | REQ-TEMPLATE | （示例）复制目录改名 | feature-standard | — |
-| **REQ-STAFFONEWS-KICKOFF** | GitHub+MCP 双轨交付试点 | **feature-standard** | `main` |
-| **REQ-002** | Google / Apple 社交登录集成 | **feature-standard** | `main` |
+|| **REQ-STAFFONEWS-KICKOFF** | GitHub+MCP 双轨交付试点 | **feature-standard** | `main` |
+|| **REQ-CS-AGENT** | 客服 Agent（AI 问答 + 三级漏斗 + 灰度监控） | **api-backend** | `main` |

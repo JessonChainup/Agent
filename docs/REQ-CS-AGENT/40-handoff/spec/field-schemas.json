@@ -1,0 +1,186 @@
+{
+  "definitions": {
+    "AgentInstance": {
+      "type": "object",
+      "properties": {
+        "instanceId": { "type": "string", "format": "uuid", "description": "全局唯一实例 ID" },
+        "tenantId": { "type": "string", "description": "商户 ID（多租户隔离强制字段）" },
+        "userId": { "type": "string", "description": "终端用户 ID" },
+        "state": {
+          "type": "string",
+          "enum": ["INACTIVE", "ACTIVE", "WAITING_FOR_CONFIRM", "PROCESSING", "COMPLETED", "ESCALATED", "ERROR"],
+          "description": "当前实例状态"
+        },
+        "currentTaskId": { "type": "string", "nullable": true, "description": "当前任务 ID" },
+        "sessionContext": {
+          "type": "object",
+          "properties": {
+            "messageHistory": { "type": "array", "items": { "$ref": "#/definitions/MessageEntry" }, "maxItems": 50 },
+            "contextExpiresAt": { "type": "string", "format": "date-time" }
+          }
+        },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "expiresAt": { "type": "string", "format": "date-time", "description": "INACTIVE 超时时间" },
+        "version": { "type": "integer", "description": "乐观锁版本号，用于并发控制" }
+      },
+      "required": ["instanceId", "tenantId", "userId", "state", "createdAt", "updatedAt", "version"]
+    },
+
+    "MessageEntry": {
+      "type": "object",
+      "properties": {
+        "role": { "type": "string", "enum": ["user", "agent"] },
+        "content": { "type": "string", "maxLength": 1000 },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["role", "content", "timestamp"]
+    },
+
+    "AgentTask": {
+      "type": "object",
+      "properties": {
+        "taskId": { "type": "string", "format": "uuid" },
+        "instanceId": { "type": "string" },
+        "state": {
+          "type": "string",
+          "enum": ["PENDING", "MATCHING", "CLARIFYING", "EXECUTING", "CONFIRMING", "COMPLETED", "FAILED"]
+        },
+        "requestId": { "type": "string", "description": "幂等去重标识" },
+        "input": { "type": "string", "maxLength": 1000 },
+        "intent": { "type": "string", "nullable": true },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 100 },
+        "result": { "type": "object", "nullable": true },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["taskId", "instanceId", "state", "input", "createdAt"]
+    },
+
+    "L2Confirmation": {
+      "type": "object",
+      "properties": {
+        "requestId": { "type": "string", "description": "幂等去重标识（5s 内相同 requestId 只执行一次）" },
+        "instanceId": { "type": "string" },
+        "operationPreview": { "type": "string", "maxLength": 500 },
+        "impact": { "type": "string", "maxLength": 500 },
+        "status": {
+          "type": "string",
+          "enum": ["PENDING", "CONFIRMED", "CANCELLED", "TIMEOUT"]
+        },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "expiresAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["requestId", "instanceId", "operationPreview", "status", "createdAt", "expiresAt"]
+    },
+
+    "L3Transfer": {
+      "type": "object",
+      "properties": {
+        "transferId": { "type": "string", "format": "uuid" },
+        "instanceId": { "type": "string" },
+        "summary": { "type": "string", "description": "脱敏后的问题摘要（最小化传递）" },
+        "fullHistoryHash": { "type": "string", "description": "全量对话历史 SHA256（按需获取）" },
+        "transferredAt": { "type": "string", "format": "date-time" },
+        "resolvedAt": { "type": "string", "format": "date-time", "nullable": true }
+      },
+      "required": ["transferId", "instanceId", "summary", "transferredAt"]
+    },
+
+    "MerchantConfig": {
+      "type": "object",
+      "properties": {
+        "tenantId": { "type": "string" },
+        "globalEnabled": { "type": "boolean", "default": false },
+        "autoReplyEnabled": { "type": "boolean", "default": false },
+        "autoThreshold": { "type": "integer", "minimum": 60, "maximum": 95, "default": 80 },
+        "confirmTimeoutMs": { "type": "integer", "minimum": 60000, "maximum": 300000, "default": 120000 },
+        "contradictionLimit": { "type": "integer", "minimum": 1, "maximum": 5, "default": 2 },
+        "highRiskLock": { "type": "boolean", "default": true },
+        "sensitiveKeywords": { "type": "array", "items": { "type": "string" } },
+        "dailyLimit": { "type": "integer", "default": 0, "description": "0=不限制" },
+        "ipWhitelist": { "type": "array", "items": { "type": "string", "format": "cidr" } },
+        "languages": { "type": "array", "items": { "type": "string" } },
+        "kycDataRetentionDays": { "type": "integer", "default": 30, "minimum": 7, "maximum": 30 },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["tenantId"]
+    },
+
+    "AuditLog": {
+      "type": "object",
+      "properties": {
+        "eventId": { "type": "string", "format": "uuid" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "merchantId": { "type": "string" },
+        "sessionId": { "type": "string" },
+        "userInput": { "type": "string", "description": "已脱敏的用户输入" },
+        "classification": { "type": "string" },
+        "confidence": { "type": "number" },
+        "funnelLevel": { "type": "string", "enum": ["L1", "L2", "L3"] },
+        "actionTaken": { "type": "string" },
+        "apiCalls": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "api": { "type": "string" },
+              "status": { "type": "integer" },
+              "durationMs": { "type": "integer" }
+            }
+          }
+        },
+        "errorLevel": { "type": "string", "enum": ["L1", "L2", "L3", "L4"], "nullable": true },
+        "errorDetail": { "type": "string", "nullable": true },
+        "userSatisfied": { "type": "boolean", "nullable": true }
+      },
+      "required": ["eventId", "timestamp", "merchantId", "sessionId", "classification", "funnelLevel"]
+    },
+
+    "KycQueryResult": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["unverified", "pending", "approved", "rejected"],
+          "description": "仅返回状态，不返回证件信息"
+        },
+        "level": {
+          "type": "string",
+          "enum": ["Lv1", "Lv2", "Lv3"],
+          "nullable": true
+        },
+        "rejectReason": {
+          "type": "string",
+          "enum": ["证件模糊", "信息不一致", "证件过期", "其他"],
+          "description": "仅输出预设分类，不输出审核员原始备注"
+        },
+        "availableLevels": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "支持的所有认证等级"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time",
+          "nullable": true,
+          "description": "该查询结果在 Agent 上下文中保留 30 秒后移除"
+        }
+      },
+      "required": ["status"]
+    },
+
+    "AuthSession": {
+      "type": "object",
+      "properties": {
+        "sessionId": { "type": "string" },
+        "userId": { "type": "string" },
+        "tenantId": { "type": "string" },
+        "tokenType": { "type": "string", "enum": ["JWT", "API_KEY", "SESSION"] },
+        "isAuthenticated": { "type": "boolean" },
+        "expiresAt": { "type": "string", "format": "date-time" },
+        "rateLimitRemaining": { "type": "integer", "description": "本分钟剩余查询次数" }
+      },
+      "required": ["sessionId", "userId", "tenantId", "isAuthenticated"]
+    }
+  }
+}

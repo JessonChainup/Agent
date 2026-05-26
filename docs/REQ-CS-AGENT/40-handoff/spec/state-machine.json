@@ -1,0 +1,31 @@
+{
+  "name": "AgentInstanceStateMachine",
+  "version": "2.0.0",
+  "states": ["INACTIVE", "ACTIVE", "WAITING_FOR_CONFIRM", "PROCESSING", "COMPLETED", "ESCALATED", "ERROR"],
+  "initialState": "INACTIVE",
+  "transitions": [
+    { "from": "INACTIVE", "event": "user_input", "to": "ACTIVE", "guard": "inputScore >= 50%" },
+    { "from": "ACTIVE", "event": "confidence_high", "to": "COMPLETED", "guard": "confidence >= 80%" },
+    { "from": "ACTIVE", "event": "confidence_medium", "to": "WAITING_FOR_CONFIRM", "guard": "confidence 50%-79%" },
+    { "from": "ACTIVE", "event": "confidence_low", "to": "ESCALATED", "guard": "confidence < 50%" },
+    { "from": "ACTIVE", "event": "risk_trigger", "to": "ESCALATED", "guard": "funds/security/compliance matched" },
+    { "from": "WAITING_FOR_CONFIRM", "event": "user_confirm", "to": "PROCESSING" },
+    { "from": "WAITING_FOR_CONFIRM", "event": "user_cancel", "to": "ERROR" },
+    { "from": "WAITING_FOR_CONFIRM", "event": "timeout_120s", "to": "ESCALATED" },
+    { "from": "WAITING_FOR_CONFIRM", "event": "user_new_message", "to": "WAITING_FOR_CONFIRM", "action": "append_context" },
+    { "from": "PROCESSING", "event": "exec_success", "to": "COMPLETED" },
+    { "from": "PROCESSING", "event": "exec_failure", "to": "ERROR" },
+    { "from": "PROCESSING", "event": "timeout_30s", "to": "ERROR" },
+    { "from": "COMPLETED", "event": "timeout_10min", "to": "INACTIVE" },
+    { "from": "COMPLETED", "event": "user_new_message_10min", "to": "ACTIVE" },
+    { "from": "ESCALATED", "event": "agent_callback_complete", "to": "INACTIVE" },
+    { "from": "ESCALATED", "event": "user_new_message_short", "to": "ACTIVE" },
+    { "from": "ERROR", "event": "user_new_request", "to": "ACTIVE" },
+    { "from": "ERROR", "event": "session_close", "to": "INACTIVE" }
+  ],
+  "timeoutRules": [
+    { "state": "WAITING_FOR_CONFIRM", "durationMs": 120000, "event": "timeout_120s" },
+    { "state": "PROCESSING", "durationMs": 30000, "event": "timeout_30s" },
+    { "state": "COMPLETED", "durationMs": 600000, "event": "timeout_10min" }
+  ]
+}

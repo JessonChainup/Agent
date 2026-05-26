@@ -1,0 +1,72 @@
+{
+  "roles": [
+    {
+      "roleId": "merchant_admin",
+      "roleName": "商户管理员",
+      "description": "商户后台超级管理员，拥有完整配置权限"
+    },
+    {
+      "roleId": "merchant_operator",
+      "roleName": "商户运营",
+      "description": "商户后台运营人员，仅查看和维护权限"
+    },
+    {
+      "roleId": "chainup_ops",
+      "roleName": "Chainup 平台运营",
+      "description": "平台运营，跨商户查看和紧急干预"
+    },
+    {
+      "roleId": "end_user",
+      "roleName": "终端用户",
+      "description": "交易所的终端用户，通过前端嵌件与 Agent 交互"
+    },
+    {
+      "roleId": "human_agent",
+      "roleName": "人工客服",
+      "description": "商户的人工客服人员，处理 L3 转接"
+    }
+  ],
+  "permissions": [
+    { "module": "基础开关", "action": "查看", "roles": ["merchant_admin", "merchant_operator", "chainup_ops"] },
+    { "module": "基础开关", "action": "启用/停用", "roles": ["merchant_admin"] },
+    { "module": "基础开关", "action": "更改入口显示", "roles": ["merchant_admin"] },
+
+    { "module": "自动回复规则", "action": "查看", "roles": ["merchant_admin", "merchant_operator", "chainup_ops"] },
+    { "module": "自动回复规则", "action": "修改阈值", "roles": ["merchant_admin"] },
+    { "module": "自动回复规则", "action": "修改超时/矛盾次数", "roles": ["merchant_admin"] },
+    { "module": "自动回复规则", "action": "修改高风险模式", "roles": ["merchant_admin"] },
+
+    { "module": "知识库管理", "action": "查看 FAQ", "roles": ["merchant_admin", "merchant_operator", "chainup_ops"] },
+    { "module": "知识库管理", "action": "新增/编辑/删除 FAQ", "roles": ["merchant_admin", "merchant_operator"] },
+    { "module": "知识库管理", "action": "批量导入", "roles": ["merchant_admin"] },
+    { "module": "知识库管理", "action": "上传文档", "roles": ["merchant_admin", "merchant_operator"] },
+    { "module": "知识库管理", "action": "搜索测试", "roles": ["merchant_admin", "merchant_operator"] },
+    { "module": "知识库管理", "action": "版本回滚", "roles": ["merchant_admin"] },
+
+    { "module": "安全限制", "action": "查看", "roles": ["merchant_admin", "merchant_operator", "chainup_ops"] },
+    { "module": "安全限制", "action": "修改敏感词列表", "roles": ["merchant_admin"] },
+    { "module": "安全限制", "action": "修改高风险操作类型", "roles": ["merchant_admin"] },
+    { "module": "安全限制", "action": "修改日处理上限", "roles": ["merchant_admin", "chainup_ops"] },
+    { "module": "安全限制", "action": "修改 IP 白名单", "roles": ["merchant_admin"] },
+
+    { "module": "监控统计", "action": "查看", "roles": ["merchant_admin", "merchant_operator", "chainup_ops"] },
+
+    { "module": "审计日志", "action": "查看本商户日志", "roles": ["merchant_admin", "chainup_ops"] },
+    { "module": "审计日志", "action": "跨商户查看", "roles": ["chainup_ops"] },
+    { "module": "审计日志", "action": "导出", "roles": ["merchant_admin", "chainup_ops"] },
+
+    { "module": "灰度部署", "action": "查看灰度配置", "roles": ["merchant_admin", "chainup_ops"] },
+    { "module": "灰度部署", "action": "切换灰度阶段", "roles": ["chainup_ops"] },
+    { "module": "灰度部署", "action": "调整灰度比例", "roles": ["chainup_ops"] },
+
+    { "module": "P0 停用", "action": "自动触发", "roles": ["system"] },
+    { "module": "P0 停用", "action": "手动恢复", "roles": ["merchant_admin", "chainup_ops"] },
+
+    { "module": "L3 转人工", "action": "查看上下文摘要", "roles": ["human_agent"] },
+    { "module": "L3 转人工", "action": "请求全量对话历史", "roles": ["human_agent"] },
+    { "module": "L3 转人工", "action": "发起完成回调", "roles": ["human_agent"] },
+
+    { "module": "个人数据查询", "action": "查询自己的", "roles": ["end_user"] },
+    { "module": "个人数据查询", "action": "跨用户查询", "roles": [] }
+  ]
+}
