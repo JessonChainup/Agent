@@ -1,0 +1,105 @@
+{
+  "version": 1,
+  "lastUpdated": "2026-05-26T05:58:05.071100+00:00",
+  "entries": [
+    {
+      "id": "01c19f5e",
+      "type": "correction",
+      "scope": "global",
+      "key": "china-output",
+      "value": "全中文输出，禁止中英混杂",
+      "createdAt": "2026-05-26T05:57:48.754723+00:00",
+      "expiresAt": null
+    },
+    {
+      "id": "4fa70aec",
+      "type": "correction",
+      "scope": "global",
+      "key": "heading-hierarchy",
+      "value": "严格 H1/H2/H3/H4 语义层级",
+      "createdAt": "2026-05-26T05:57:48.784281+00:00",
+      "expiresAt": null
+    },
+    {
+      "id": "0ac0248b",
+      "type": "correction",
+      "scope": "global",
+      "key": "competitor-no-strategy",
+      "value": "竞品分析报告不含自己的产品策略",
+      "createdAt": "2026-05-26T05:57:48.813743+00:00",
+      "expiresAt": null
+    },
+    {
+      "id": "f056f7a1",
+      "type": "correction",
+      "scope": "global",
+      "key": "competitor-coverage",
+      "value": "每竞品必须覆盖：功能/定价/服务/风险",
+      "createdAt": "2026-05-26T05:57:48.843035+00:00",
+      "expiresAt": null
+    },
+    {
+      "id": "39d17e8b",
+      "type": "correction",
+      "scope": "global",
+      "key": "ask-not-guess",
+      "value": "不确定时先问不问猜",
+      "createdAt": "2026-05-26T05:57:48.872281+00:00",
+      "expiresAt": null
+    },
+    {
+      "id": "99333bf6",
+      "type": "correction",
+      "scope": "global",
+      "key": "no-chinese-font",
+      "value": "font-family 中不能出现中文汉字字符串",
+      "createdAt": "2026-05-26T05:57:48.901281+00:00",
+      "expiresAt": null
+    },
+    {
+      "id": "ffc7c6ad",
+      "type": "correction",
+      "scope": "global",
+      "key": "overseas-only",
+      "value": "海外面向报告不得用中国数据/分析中国竞品",
+      "createdAt": "2026-05-26T05:57:48.930770+00:00",
+      "expiresAt": null
+    },
+    {
+      "id": "307e2a2c",
+      "type": "rule",
+      "scope": "global",
+      "key": "session-startup",
+      "value": "新会话先加载 chainup-ai-product-workflow + chainup-pm-cognition-layer skill",
+      "createdAt": "2026-05-26T05:58:04.982560+00:00",
+      "expiresAt": null
+    },
+    {
+      "id": "70be32a3",
+      "type": "rule",
+      "scope": "global",
+      "key": "memory-role",
+      "value": "memory 仅存修正/规则/指针，知识类内容在 skill 和文件中",
+      "createdAt": "2026-05-26T05:58:05.012321+00:00",
+      "expiresAt": null
+    },
+    {
+      "id": "cf8fada8",
+      "type": "rule",
+      "scope": "global",
+      "key": "file-persistence",
+      "value": "新项目直接在 delivery-repo-template/docs/REQ-<id>/ 下创建",
+      "createdAt": "2026-05-26T05:58:05.041779+00:00",
+      "expiresAt": null
+    },
+    {
+      "id": "072b1308",
+      "type": "pointer",
+      "scope": "global",
+      "key": "active-project",
+      "value": "REQ-CS-AGENT (客服 Agent)",
+      "createdAt": "2026-05-26T05:58:05.071073+00:00",
+      "expiresAt": null
+    }
+  ]
+}
