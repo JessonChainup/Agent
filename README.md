@@ -55,5 +55,4 @@ cp -R docs/REQ-TEMPLATE docs/<REQ-ID>
 | REQ-ID | 标题 | spec_type | 分支 / PR |
 |--------|------|-----------|-----------|
 | REQ-TEMPLATE | （示例）复制目录改名 | feature-standard | — |
-|| **REQ-STAFFONEWS-KICKOFF** | GitHub+MCP 双轨交付试点 | **feature-standard** | `main` |
-|| **REQ-CS-AGENT** | 客服 Agent（AI 问答 + 三级漏斗 + 灰度监控） | **api-backend** | `main` |
+| **REQ-STAFFONEWS-KICKOFF** | GitHub+MCP 双轨交付试点 | **feature-standard** | `main` |
